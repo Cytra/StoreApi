@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Application.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using StoreApi.Commands;
 
 namespace StoreApi.Controllers
 {
@@ -16,7 +16,8 @@ namespace StoreApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddProduct(AddProduct.Commands product, CancellationToken cancellationToken)
+        public async Task<IActionResult> AddProduct(AddProduct.Commands product, 
+            CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(product, cancellationToken);
             return Ok(result);
