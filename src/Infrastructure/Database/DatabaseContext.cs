@@ -12,4 +12,7 @@ public class DatabaseContext: DbContext
 
     public DbSet<PhotoEntity> Photos { get; set; }
     public DbSet<ProductEntity> Products { get; set; }
+    public DbSet<OrderEntity> Orders { get; set; }
+    public DbSet<ClientEntity> Clients { get; set; }
+    public DbSet<InvoiceEntity> Invoices { get; set; }
 }
