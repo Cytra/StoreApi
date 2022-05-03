@@ -1,5 +1,7 @@
 using Application;
+using Application.Factories;
 using Application.Models;
+using Application.Models.Enums;
 using Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,15 +44,15 @@ public class Startup
                     var apiResponse = new ErrorResponse();
                     foreach (var modelState in context.ModelState)
                     foreach (var error in modelState.Value.Errors)
-                        apiResponse.Errors.Add(
-                            new Error { Property = modelState.Key, ErrorReason = error.ErrorMessage });
+                        apiResponse.Errors.Add(ErrorFactory.GetError(ErrorCode.ValidationError, error.ErrorMessage));
                     return new BadRequestObjectResult(apiResponse);
                 };
             });
         services.AddSwaggerExamplesFromAssemblyOf<Startup>();
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "StoreApi", Version = "v1" });
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Store API", Version = "v1" });
+            c.CustomSchemaIds(x => x.FullName?.Replace("+", "."));
             c.ExampleFilters();
         });
     }

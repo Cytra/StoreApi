@@ -2,13 +2,15 @@
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Application.Factories;
 using Application.Models;
+using Application.Models.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace StoreApi.Middleware;
 
-public class ExceptionMiddleware
+public sealed class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionMiddleware> _logger;
@@ -42,7 +44,7 @@ public class ExceptionMiddleware
     private ErrorResponse GetErrorResponse(Exception exception)
     {
         var result = new ErrorResponse();
-        result.Errors.Add(new Error { ErrorReason = "Internal Server Error" });
+        result.Errors.Add(ErrorFactory.GetError(ErrorCode.InternalError));
         return result;
     }
 }

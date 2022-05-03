@@ -4,7 +4,7 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace StoreApi.Samples;
 
-public class AddProductSample : IExamplesProvider<AddProduct.Command>
+public sealed class AddProductSample : IExamplesProvider<AddProduct.Command>
 {
     public AddProduct.Command GetExamples()
     {

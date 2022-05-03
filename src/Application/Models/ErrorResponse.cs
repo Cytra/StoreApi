@@ -1,4 +1,7 @@
-﻿namespace Application.Models;
+﻿using System.Text.Json.Serialization;
+using Application.Models.Enums;
+
+namespace Application.Models;
 
 public class ErrorResponse
 {
@@ -7,6 +10,17 @@ public class ErrorResponse
 
 public class Error
 {
-    public string Property { get; set; }
+    public Error(ErrorCode errorCode, string errorReason) :
+        this((int)errorCode, errorReason)
+    { }
+
+    [JsonConstructor]
+    public Error(int errorCode, string errorReason)
+    {
+        ErrorCode = errorCode;
+        ErrorReason = errorReason;
+    }
+
+    public int ErrorCode { get; set; }
     public string ErrorReason { get; set; }
 }

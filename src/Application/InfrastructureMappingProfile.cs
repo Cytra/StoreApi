@@ -18,5 +18,11 @@ public class InfrastructureMappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Key, opt => opt.Ignore())
             .ForMember(dest => dest.InsertTime, opt => opt.Ignore());
+
+
+        CreateMap<UpdateProduct.Command, ProductEntity>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Key, opt => opt.Ignore())
+            .ForMember(dest => dest.InsertTime, opt => opt.Ignore());
     }
 }

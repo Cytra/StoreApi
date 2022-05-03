@@ -34,12 +34,33 @@ namespace StoreApi.Controllers
             return Ok(result);
         }
 
+        [HttpPatch]
+        public async Task<IActionResult> UpdateProduct(
+            UpdateProduct.Command product,
+            CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(product,
+                cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(
+            int id, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(
+                new DeleteProduct.Command(){ Id = id},
+                cancellationToken);
+            return Ok(result);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetProduct(
             [FromQuery] GetProducts.Query product,
             CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(product,
+            var result = await _mediator.Send(
+                product,
                 cancellationToken);
             return Ok(result);
         }
