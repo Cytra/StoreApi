@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Application;
+using Application.Commands;
 using Application.Ports;
 using Infrastructure.Database;
 using MediatR;
@@ -16,7 +17,8 @@ public static class ServiceCollectionExtensions
     {
         // Infrastructure
         services.AddAutoMapper(typeof(TStartup), typeof(InfrastructureMappingProfile));
-        services.AddMediatR(typeof(TStartup).GetTypeInfo().Assembly);
+        services.AddMediatR(typeof(TStartup).Assembly);
+        services.AddMediatR(typeof(AddProduct.Command).Assembly);
 
         services.AddDbContext<DatabaseContext>(options =>
             options.UseInMemoryDatabase("MyDatabase"));
@@ -24,6 +26,7 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
+
 
     public static IServiceCollection AddOptionsConfigurations(
         this IServiceCollection services, IConfiguration configuration)

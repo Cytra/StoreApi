@@ -1,11 +1,15 @@
 using Application;
+using Application.Models;
 using Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using StoreApi.Middleware;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace StoreApi;
 
@@ -30,16 +34,34 @@ public class Startup
         services.Configure<AppOptions>(_configuration);
 
 
-        services.AddControllers();
-        services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "StoreApi", Version = "v1" }); });
+        services.AddControllers()
+            .ConfigureApiBehaviorOptions(setupAction =>
+            {
+                setupAction.InvalidModelStateResponseFactory = context =>
+                {
+                    var apiResponse = new ErrorResponse();
+                    foreach (var modelState in context.ModelState)
+                    foreach (var error in modelState.Value.Errors)
+                        apiResponse.Errors.Add(
+                            new Error { Property = modelState.Key, ErrorReason = error.ErrorMessage });
+                    return new BadRequestObjectResult(apiResponse);
+                };
+            });
+        services.AddSwaggerExamplesFromAssemblyOf<Startup>();
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "StoreApi", Version = "v1" });
+            c.ExampleFilters();
+        });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        app.UseMiddleware<ExceptionMiddleware>();
+
         if (env.IsDevelopment())
         {
-            app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "StoreApi v1"));
         }
